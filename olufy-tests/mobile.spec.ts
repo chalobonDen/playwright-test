@@ -1,4 +1,6 @@
-import { test, expect, Page } from '@playwright/test'
+import { test, devices, expect } from '@playwright/test'
+
+const BASE_URL = 'https://staging.olufy.com/th'
 
 const USER_DATA = {
   email: 'chalobon129@gmail.com',
@@ -11,24 +13,18 @@ const NEW_USER_DATA = {
 }
 
 const USER_REGISTER = {
-  email: 'chalobon129+12@gmail.com',
+  email: 'chalobon129+02@gmail.com',
   password: 'Test123456',
 }
 
-/// --- UTILS SCRIPT --- ///
-const goToLogin = async (page: Page) => {
-  await page.goto('/th')
-  await page.getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
-}
-
-/// --- TEST SCRIPT --- ///
-test.beforeEach(async ({ page }) => {
-  await page.goto('/th')
+test.use({
+  ...devices['iPhone 13 Pro'],
 })
 
 test.describe('user login', () => {
   test('login failed', async ({ page }) => {
-    await goToLogin(page)
+    await page.goto(BASE_URL)
+    await page.getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
     await page.fill('id=email', USER_DATA.email)
     await page.fill('id=password', 'Test12345677')
     await page.getByRole('main').getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
@@ -36,7 +32,8 @@ test.describe('user login', () => {
   })
 
   test('login success', async ({ page }) => {
-    await goToLogin(page)
+    await page.goto(BASE_URL)
+    await page.getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
     await page.type('id=email', USER_DATA.email)
     await page.type('id=password', USER_DATA.password)
     await page.getByRole('main').getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
@@ -44,7 +41,8 @@ test.describe('user login', () => {
   })
 
   test('login new user', async ({ page }) => {
-    await goToLogin(page)
+    await page.goto(BASE_URL)
+    await page.getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
     await page.fill('id=email', NEW_USER_DATA.email)
     await page.type('id=password', NEW_USER_DATA.password)
     await page.getByRole('main').getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
@@ -54,6 +52,7 @@ test.describe('user login', () => {
 
 test.describe('register', () => {
   test('register', async ({ page }) => {
+    await page.goto(BASE_URL)
     await page.getByRole('button', { name: 'สมัครสมาชิก' }).click()
     await page.getByPlaceholder('กรอกอีเมล').click()
     await page.getByPlaceholder('กรอกอีเมล').fill(USER_REGISTER.email)
@@ -65,7 +64,7 @@ test.describe('register', () => {
   })
 
   test('setup-profile', async ({ page }) => {
-    await goToLogin(page)
+    await page.goto('https://staging.olufy.com/th/login')
     await page.getByPlaceholder('กรอกอีเมล').fill(USER_REGISTER.email)
     await page.getByPlaceholder('กรอกรหัสผ่าน').fill(USER_REGISTER.password)
     await page.getByRole('main').getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
@@ -85,7 +84,8 @@ test.describe('register', () => {
 
 test.describe('user logout', () => {
   test('user logout', async ({ page }) => {
-    await goToLogin(page)
+    await page.goto(BASE_URL)
+    await page.getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
     await page.type('id=email', USER_DATA.email)
     await page.type('id=password', USER_DATA.password)
     await page.getByRole('main').getByRole('button', { name: 'เข้าสู่ระบบ' }).click()
@@ -94,11 +94,11 @@ test.describe('user logout', () => {
   })
 
   test('user logout with setup profile page (new user)', async ({ page }) => {
-    await goToLogin(page)
+    await page.goto(`${BASE_URL}/login`)
     await page.getByPlaceholder('กรอกอีเมล').fill(NEW_USER_DATA.email)
     await page.getByPlaceholder('กรอกรหัสผ่าน').fill(NEW_USER_DATA.password)
     await page.getByPlaceholder('กรอกรหัสผ่าน').press('Enter')
-    await page.locator('[id="headlessui-menu-button-\\:rs\\:"]').getByRole('button').click()
+    await page.locator('[id="headlessui-menu-button-\\:rl\\:"]').getByRole('button').click()
     await page.getByRole('menuitem', { name: 'ออกจากระบบ' }).click()
   })
 })

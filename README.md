@@ -1,9 +1,11 @@
 ## Getting Started
 
 ```bash
-# test
+# Running all tests
 yarn test
-# test with UI browser
+# Running a single test file
+yarn test landing-page.spec.ts
+# Running test with UI browser
 yarn test:ui
 # show report
 yarn show:report
